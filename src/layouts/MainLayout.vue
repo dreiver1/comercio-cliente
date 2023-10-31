@@ -51,8 +51,14 @@ import EssentialLink from 'components/EssentialLink.vue'
 
 const linksList = [
   {
+    title: 'Home',
+    caption: '',
+    icon: 'home',
+    link: '/'
+  },
+  {
     title: 'Produtos',
-    caption: 'quasar.dev',
+    caption: '',
     icon: 'store',
     link: '/produtos'
   }
