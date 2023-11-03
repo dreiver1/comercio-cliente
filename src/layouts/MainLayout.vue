@@ -60,7 +60,7 @@ const linksList = [
     title: 'Produtos',
     caption: '',
     icon: 'store',
-    link: '/produtos'
+    link: '/products'
   }
 ]
 
