@@ -45,8 +45,8 @@
         />
 
         <div>
-          <q-btn label="Submit" type="submit" color="primary"/>
-          <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          <q-btn label="Concluir" type="submit" color="primary"/>
+          <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" />
         </div>
       </q-form>
     </q-page>
@@ -78,6 +78,13 @@ export default defineComponent({
             quantity: quantity.value
           }
           await api.post(data)
+          route.push('/products')
+        } catch (error) {
+          throw new Error(error)
+        }
+      },
+      onReset () {
+        try {
           route.push('/products')
         } catch (error) {
           throw new Error(error)

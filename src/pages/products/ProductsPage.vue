@@ -1,6 +1,6 @@
 <template>
   <q-page class="row flex-center full-widht">
-    <div class="text-h1">Produtos</div>
+    <div class="text-h1">PRODUTOS</div>
     <div class="coulumn col-9 itens-end">
         <q-btn label="Adicionar produto" to="/addproduct"/>
         <q-list bordered separator>

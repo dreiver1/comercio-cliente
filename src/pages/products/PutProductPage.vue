@@ -44,9 +44,10 @@
         ]"
       />
 
-      <div>
+      <div class="row space-around">
         <q-btn label="Conluir" type="submit" color="primary"/>
         <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" />
+        <q-btn label="Excluir" color="red" text-color="white" @click="deleteProduct()"/>
       </div>
     </q-form>
   </q-page>
@@ -74,6 +75,14 @@ export default defineComponent({
       price.value = product.price
       quantity.value = product.quantity
     })
+    const deleteProduct = async () => {
+      try {
+        await api.remove(Id)
+        route.push('/products')
+      } catch (error) {
+        throw new Error(error)
+      }
+    }
     return {
       name,
       description,
@@ -101,7 +110,8 @@ export default defineComponent({
         } catch (error) {
           throw new Error(error)
         }
-      }
+      },
+      deleteProduct
     }
   }
 })
