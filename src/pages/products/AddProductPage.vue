@@ -43,7 +43,6 @@
             val => val !== null && val !== '' || 'Obrigatorio*',
           ]"
         />
-
         <div>
           <q-btn label="Concluir" type="submit" color="primary"/>
           <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" />
