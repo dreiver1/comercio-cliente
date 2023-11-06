@@ -43,6 +43,7 @@
             val => val !== null && val !== '' || 'Obrigatorio*',
           ]"
         />
+
         <div>
           <q-btn label="Concluir" type="submit" color="primary"/>
           <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" />
@@ -62,12 +63,14 @@ export default defineComponent({
     const description = ref('')
     const price = ref('')
     const quantity = ref('')
+    const image = ref('')
     const api = useAPI('products')
     return {
       name,
-      description,
       price,
+      image,
       quantity,
+      description,
       async onSubmit () {
         try {
           const data = {
@@ -76,7 +79,7 @@ export default defineComponent({
             price: price.value,
             quantity: quantity.value
           }
-          await api.post(data)
+          await api.post(data, image.value)
           route.push('/products')
         } catch (error) {
           throw new Error(error)
