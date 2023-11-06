@@ -1,5 +1,5 @@
 import { api } from 'src/boot/axios'
-export default function useAPI(url) {
+export default function useAPI (url) {
   const list = async () => {
     try {
       const data = await api.get(url)
