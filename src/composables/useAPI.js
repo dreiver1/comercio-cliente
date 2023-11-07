@@ -16,9 +16,9 @@ export default function useAPI (url) {
       throw new Error(error)
     }
   }
-  const post = async (dados, file) => {
+  const post = async (dados) => {
     try {
-      const data = await api.post(url, dados, file)
+      const data = await api.post(url, dados)
       return data.status
     } catch (error) {
       throw new Error(error)
@@ -32,7 +32,24 @@ export default function useAPI (url) {
       throw new Error(error)
     }
   }
+  const upImage = async (image) => {
+    try {
+      const formData = new FormData()
+      formData.append('file', image)
+
+      // Make a POST request with Axios
+      const response = await api.postForm('/products/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      return response.data
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
   return {
+    upImage,
     list,
     update,
     post,

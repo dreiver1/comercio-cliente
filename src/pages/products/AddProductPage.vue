@@ -44,6 +44,13 @@
           ]"
         />
 
+        <q-file
+          filled
+          v-model="image"
+          label="Imagem *"
+          @update:model-value="sendImage()"
+        />
+
         <div>
           <q-btn label="Concluir" type="submit" color="primary"/>
           <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" />
@@ -63,9 +70,20 @@ export default defineComponent({
     const description = ref('')
     const price = ref('')
     const quantity = ref('')
-    const image = ref('')
     const api = useAPI('products')
+    const image = ref('')
+    const imageURL = ref('')
+    const sendImage = async () => {
+      try {
+        const response = await api.upImage(image.value)
+        console.log(response)
+        imageURL.value = response
+      } catch (error) {
+        throw new Error(error)
+      }
+    }
     return {
+      sendImage,
       name,
       price,
       image,
@@ -77,9 +95,10 @@ export default defineComponent({
             name: name.value,
             description: description.value,
             price: price.value,
-            quantity: quantity.value
+            quantity: quantity.value,
+            img: imageURL.value
           }
-          await api.post(data, image.value)
+          await api.post(data)
           route.push('/products')
         } catch (error) {
           throw new Error(error)
