@@ -8,21 +8,10 @@ export default function useAPI(url) {
       throw new Error(error)
     }
   }
-  const update = async (data, file) => {
-    console.log('filé', file)
-    const formData = new FormData()
-    formData.append('data', JSON.stringify(data))
-    formData.append('file', file)
-    // if (file) {
-    // }
-    console.log('form', formData)
+  const update = async (data) => {
     try {
-      const data = await api.put(url, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      return data.status
+      const response = await api.put(url, data)
+      return response.status
     } catch (error) {
       throw new Error(error)
     }
@@ -50,24 +39,23 @@ export default function useAPI(url) {
       throw new Error(error)
     }
   }
-  // const upImage = async (image) => {
-  //   try {
-  //     const formData = new FormData()
-  //     formData.append('file', image)
-
-  //     // Make a POST request with Axios
-  //     const response = await api.postForm('/products/upload', formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data'
-  //       }
-  //     })
-  //     return response.data
-  //   } catch (error) {
-  //     throw new Error(error)
-  //   }
-  // }
+  const upImage = async (file) => {
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const response = await api.postForm(`${url}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      return response.data
+    } catch (error) {
+      console.log(error)
+      throw new Error(error)
+    }
+  }
   return {
-    // upImage,
+    upImage,
     list,
     update,
     post,

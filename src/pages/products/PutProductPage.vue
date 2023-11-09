@@ -8,12 +8,39 @@
       @reset="onReset"
       class="q-gutter-md col-6"
     >
+    <div class="row q-gutter-md">
+      <q-img
+        v-if="newImg === null"
+        :src="img"
+        :ratio="16/9"
+        spinner-color="primary"
+        spinner-size="82px"
+        style="width: 20em;"
+      />
+      <q-img
+        v-else
+        :src="`http://localhost:8000/${img}`"
+        :ratio="16/9"
+        spinner-color="primary"
+        spinner-size="82px"
+      />
+
+      <q-file
+        filled
+        v-model="newImg"
+        label="Trocar Imagem"
+        accept="image/*"
+        style="width: 10em;"
+        @update:model-value="updateImage"
+      />
+    </div>
+
       <q-input
         filled
         v-model="name"
         label="Nome do produto *"
         lazy-rules
-        :rules="[ val => val && val.length < 3 || 'Por favor digite o nome do produto']"
+        :rules="[ val => val && val.length > 3 || 'Por favor digite o nome do produto']"
       />
 
       <q-input
@@ -44,36 +71,6 @@
         ]"
       />
 
-      <div class="row q-gutter-md">
-        <q-img
-          :src="img"
-          :ratio="16/9"
-          spinner-color="primary"
-          spinner-size="100px"
-          :style="{
-            'max-width': '250px',
-            'max-height': '250px'
-          }"
-        />
-
-        <q-file
-          filled
-          v-model="img"
-          label="Imagem"
-        />
-
-        <q-img
-          :src="img"
-          :ratio="16/9"
-          spinner-color="primary"
-          spinner-size="82px"
-          :style="{
-            'max-width': '250px',
-            'max-height': '250px'
-          }"
-        />
-      </div>
-
       <div class="row space-around">
         <q-btn label="Conluir" type="submit" color="primary"/>
         <q-btn label="Cancelar" type="reset" color="primary" flat class="q-ml-sm" />
@@ -100,7 +97,7 @@ export default defineComponent({
     const quantity = ref(0.00)
     const Id = product.id
     const img = ref('')
-    const newImg = ref([])
+    const newImg = ref(null)
     onMounted(() => {
       name.value = product.name
       description.value = product.description
@@ -116,7 +113,18 @@ export default defineComponent({
         throw new Error(error)
       }
     }
+    const updateImage = async () => {
+      try {
+        const response = await api.upImage(newImg.value)
+        console.log(response)
+        img.value = response
+      } catch (error) {
+        throw new Error(error)
+      }
+    }
+
     return {
+      updateImage,
       name,
       description,
       price,
@@ -134,7 +142,7 @@ export default defineComponent({
             quantity: quantity.value,
             img: img.value
           }
-          await api.update(data, newImg.value)
+          await api.update(data)
           route.push('/products')
         } catch (error) {
           throw new Error(error)
