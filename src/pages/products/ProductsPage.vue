@@ -1,29 +1,44 @@
 <template>
   <q-page class="row flex-center full-widht">
-    <div class="text-h1">PRODUTOS</div>
+    <!-- <div class="text-h1">PRODUTOS</div> -->
     <div class="coulumn col-9 itens-end">
         <q-btn label="Adicionar produto" to="/addproduct"/>
-        <!-- <q-list bordered separator>
-          <q-item v-for="product in listProducts" v-bind:key="product.id" v-ripple class="flex justify-between">
-            <div class="text q-ma-sm col-4">Nome: {{ product.name }}</div>
-            <div class="text q-ma-sm col-2">R$ {{ product.price }}</div>
-            <div class="text q-ma-sm col-2">Qtde: {{ product.quantity }}</div>
-            <q-btn label="Editar" flat @click="editProduct(product.id)"/>
-            <img :src="product.img" alt="img" srcset="">
-          </q-item>
-        </q-list> -->
         <div class="q-pa-md">
           <q-table
-            grid
             title="Produtos"
             :rows="listProducts"
             :columns="columns"
             row-key="name"
           >
-          <template v-slot:body-cell-imagem="props">
-            <q-td :props="props">
-              <img :src="props.row.img" alt="Imagem" style="max-width: 50px; max-height: 50px;">
-            </q-td>
+          <template v-slot:body="props">
+            <q-tr @click="editProduct(props.row.id)">
+              <q-td
+                key="name"
+                :value="props.row.img"
+              >
+                <q-img
+                  :src="props.row.img ? `http://localhost:8000/${props.row.img}` : `http://localhost:8000/static/products/default.png`"
+                  :ratio="16/9"
+                  :style="{
+                    'max-width': '100px',
+                    'max-height': '100px'
+                  }"
+                />
+                <span class="q-px-lg">{{ props.row.name }}</span>
+              </q-td>
+              <q-td
+                key="price"
+                :value="props.row.price"
+              >
+                {{ props.row.price }}
+              </q-td>
+              <q-td
+                key="quantity"
+                :value="props.row.quantity"
+              >
+                {{ props.row.quantity }}
+              </q-td>
+            </q-tr>
           </template>
           </q-table>
         </div>
@@ -47,7 +62,6 @@ export default defineComponent({
       try {
         const response = await api.list()
         listProducts.value = response
-        console.log(process.env.api)
       } catch (error) {
         throw new Error(error)
       }
@@ -57,7 +71,6 @@ export default defineComponent({
     const img = ref('')
     const editProduct = (id) => {
       const aux = listProducts.value.find(product => product.id === id)
-      console.log(aux.name)
       product.name = aux.name
       product.id = id
       product.description = aux.description
@@ -69,17 +82,14 @@ export default defineComponent({
 
     const columns = [
       {
-        name: 'product',
-        required: true,
-        label: 'Produto',
-        align: 'left',
-        field: row => row.name,
-        format: val => `${val}`,
+        name: 'name',
+        label: 'Product',
+        field: 'name',
+        align: 'center',
         sortable: true
       },
-      { name: 'price', label: 'Preço', sortable: true, field: row => row.price, format: val => `${val}` },
-      { name: 'quantity', label: 'QTDE', field: row => row.quantity, format: val => `${val}` }
-      // { name: 'img', label: 'Imagem', field: row => row.img, format: val => { return `<img src="${val}" alt="Imagem" style="max-width: 50px; max-height: 50px;" />` } }
+      { name: 'price', label: 'Preço', field: 'price', align: 'left', sortable: true },
+      { name: 'quantity', label: 'Quantidade', field: 'quantity', align: 'left', sortable: true }
     ]
 
     return {
