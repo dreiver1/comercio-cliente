@@ -24,16 +24,9 @@ export default function useAPI(url) {
       throw new Error(error)
     }
   }
-  const post = async (data, file) => {
+  const post = async (payload) => {
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('data', JSON.stringify(data))
-      const response = await api.postForm(url, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+      const response = await api.post(url, payload)
       return response.data
     } catch (error) {
       throw new Error(error)
@@ -50,7 +43,6 @@ export default function useAPI(url) {
       })
       return response.data
     } catch (error) {
-      console.log(error)
       throw new Error(error)
     }
   }

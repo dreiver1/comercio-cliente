@@ -23,6 +23,7 @@
         :ratio="16/9"
         spinner-color="primary"
         spinner-size="82px"
+        style="width: 20em;"
       />
 
       <q-file
@@ -116,13 +117,11 @@ export default defineComponent({
     const updateImage = async () => {
       try {
         const response = await api.upImage(newImg.value)
-        console.log(response)
         img.value = response
       } catch (error) {
         throw new Error(error)
       }
     }
-
     return {
       updateImage,
       name,

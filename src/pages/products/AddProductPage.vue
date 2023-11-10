@@ -48,6 +48,7 @@
           filled
           v-model="image"
           label="Imagem *"
+          @update:model-value="updateImage"
         />
 
         <div>
@@ -70,6 +71,7 @@ export default defineComponent({
     const description = ref('')
     const price = ref('')
     const quantity = ref('')
+    const img = ref('')
     const image = ref([]) // não pode ser string, pois o componente q-file espera um array
     return {
       name,
@@ -77,15 +79,17 @@ export default defineComponent({
       image,
       quantity,
       description,
+      img,
       async onSubmit () {
         try {
           const data = {
             name: name.value,
             description: description.value,
             price: price.value,
-            quantity: quantity.value
+            quantity: quantity.value,
+            img: img.value
           }
-          await api.post(data, image.value)
+          await api.post(data)
           route.push('/products')
         } catch (error) {
           throw new Error(error)
@@ -94,6 +98,14 @@ export default defineComponent({
       onReset () {
         try {
           route.push('/products')
+        } catch (error) {
+          throw new Error(error)
+        }
+      },
+      async updateImage () {
+        try {
+          const response = await api.upImage(image.value)
+          img.value = response
         } catch (error) {
           throw new Error(error)
         }
