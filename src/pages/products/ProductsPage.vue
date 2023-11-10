@@ -79,7 +79,6 @@ export default defineComponent({
       },
       { name: 'price', label: 'Preço', sortable: true, field: row => row.price, format: val => `${val}` },
       { name: 'quantity', label: 'QTDE', field: row => row.quantity, format: val => `${val}` }
-      // { name: 'img', label: 'Imagem', field: row => row.img, format: val => { return `<img src="${val}" alt="Imagem" style="max-width: 50px; max-height: 50px;" />` } }
     ]
 
     return {
