@@ -1,5 +1,14 @@
 <template>
   <q-page class="flex flex-center">
+    <q-btn
+      flat
+      size="md"
+      color="primary"
+      icon="check"
+      label="OK"
+      @click="onMe"
+    />
+    -> {{ me }}
     <q-card style="min-width: 25%;">
       <q-card-section>
         <q-input v-model="data.email" type="text" label="Email" />
@@ -22,17 +31,24 @@ export default defineComponent({
   setup () {
     const authAPI = useAuth()
 
+    const me = ref(null)
+
     const data = ref({
       email: 'string',
       password: 'string'
     })
 
     const login = async() => {
-      console.log(data.value)
       await authAPI.login(data.value)
     }
 
+    const onMe = async() => {
+      me.value = await authAPI.getMe()
+    }
+
     return {
+      me,
+      onMe,
       data,
       login
     }

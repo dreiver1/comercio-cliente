@@ -1,22 +1,37 @@
 import { api } from 'src/boot/axios'
+import { useAuthStore } from 'src/stores/authStore'
 
 export default function useAuth() {
-  const login = async (payload) => {
+  const authStore = useAuthStore()
+
+  const login = async (data) => {
     try {
-      const teste = new FormData()
-      teste.append('username', payload.email)
-      teste.append('password', payload.password)
-      const response = await api.postForm('/auth/token', teste, {
+      const payload = new FormData()
+      payload.append('username', data.email)
+      payload.append('password', data.password)
+      const response = await api.postForm('/auth/token', payload, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
+      authStore.accessToken = response.data.access_token
       return response.data
     } catch (error) {
       throw new Error(error)
     }
   }
+
+  const getMe = async () => {
+    try {
+      const response = await api.get('/auth/me')
+      return response.data
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   return {
-    login
+    login,
+    getMe
   }
 }
