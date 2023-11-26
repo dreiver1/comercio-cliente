@@ -15,12 +15,18 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import useAuth from 'src/composables/useAuth'
+import { useAuthStore } from 'src/stores/authStore'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'LoginPage',
 
   setup () {
     const authAPI = useAuth()
+
+    const authStore = useAuthStore()
+
+    const router = useRouter()
 
     const data = ref({
       email: 'string',
@@ -29,6 +35,9 @@ export default defineComponent({
 
     const login = async() => {
       await authAPI.login(data.value)
+      if (authStore.validateToken) {
+        router.push({ name: 'dashboard' })
+      }
     }
 
     return {

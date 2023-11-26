@@ -30,7 +30,17 @@ export default function useAuth() {
     }
   }
 
+  const register = async (data) => {
+    try {
+      const response = await api.post('/auth/register', data)
+      return response.data
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   return {
+    register,
     login,
     getMe
   }

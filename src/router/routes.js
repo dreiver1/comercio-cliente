@@ -12,10 +12,18 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') },
-      { path: 'products', component: () => import('src/pages/products/ProductsPage.vue') },
-      { path: 'addproduct', component: () => import('src/pages/products/AddProductPage.vue') },
-      { path: 'putproduct', component: () => import('src/pages/products/PutProductPage.vue') }
+      { path: 'dashboard', name: 'dashboard', component: () => import('pages/IndexPage.vue') },
+      { path: 'products', name: 'products', component: () => import('src/pages/products/ProductsPage.vue') },
+      { path: 'addproduct', name: 'addProducts', component: () => import('src/pages/products/AddProductPage.vue') },
+      { path: 'putproduct', name: 'putProducts', component: () => import('src/pages/products/PutProductPage.vue') },
+      {
+        path: 'users/',
+        children: [
+          { path: '', name: 'users', component: () => import('src/pages/auth/UsersPage.vue') },
+          { path: 'create', name: 'createUser', component: () => import('src/pages/auth/CreateUserPage.vue') },
+          { path: 'edit', name: 'editUser', component: () => import('src/pages/auth/EditUserPage.vue') }
+        ]
+      }
     ],
     meta: {
       requiresAuth: true

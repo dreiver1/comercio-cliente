@@ -51,16 +51,22 @@ import EssentialLink from 'components/EssentialLink.vue'
 
 const linksList = [
   {
-    title: 'Home',
+    title: 'Dashboard',
     caption: '',
-    icon: 'home',
-    link: '/'
+    icon: 'dashboard',
+    link: '/dashboard'
   },
   {
     title: 'Produtos',
     caption: '',
     icon: 'store',
     link: '/products'
+  },
+  {
+    title: 'Usuários',
+    caption: '',
+    icon: 'people',
+    link: '/users'
   }
 ]
 
