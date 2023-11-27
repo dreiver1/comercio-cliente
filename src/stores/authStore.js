@@ -6,6 +6,9 @@ export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref('')
 
   const validateToken = async () => {
+    if (accessToken.value === '') {
+      return true
+    }
     const { payload } = useJwt(accessToken.value)
     const tokenValid = await payload.value.exp < Date.now() / 1000
     if (tokenValid) {

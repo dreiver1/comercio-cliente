@@ -30,7 +30,7 @@ export default route(function (/* { store, ssrContext } */) {
   Router.beforeEach(async (to) => {
     const authStore = useAuthStore()
     const tokenValid = await authStore.validateToken()
-    if (to.meta.requiresAuth && tokenValid) {
+    if ((to.meta.requiresAuth && tokenValid) || authStore.accessToken.value) {
       return { name: 'loginDefault' }
     }
   })

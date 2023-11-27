@@ -13,8 +13,9 @@
       <q-checkbox v-model="data.is_staff" label="Staff" />
       <q-checkbox v-model="data.is_superuser" label="Superuser" />
       <div>
-        <q-btn icon="mdi-content-save-edit-outline" label="Submit" type="submit" color="primary"/>
+        <q-btn icon="mdi-cancel" label="Cancelar" @click="onCancel" flat color="primary" />
         <q-btn icon="mdi-broom" label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+        <q-btn icon="mdi-content-save-edit-outline" label="Submit" type="submit" color="primary"/>
       </div>
     </q-form>
   </q-page>
@@ -63,8 +64,13 @@ export default defineComponent({
       }
     }
 
+    const onCancel = () => {
+      router.push({ name: 'users' })
+    }
+
     return {
       data,
+      onCancel,
       onSubmit,
       onReset
     }

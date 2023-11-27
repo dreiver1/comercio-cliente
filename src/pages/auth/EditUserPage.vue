@@ -2,19 +2,17 @@
   <q-page class="flex flex-center">
     <q-form
       @submit="onSubmit"
-      @reset="onReset"
-      @cancel="onCancel"
       class="q-gutter-md"
     >
-      <q-input v-model="data.email" type="text" label="Email" />
-      <q-input v-model="data.first_name" type="text" label="First Name" />
-      <q-input v-model="data.last_name" type="text" label="Last Name" />
-      <q-checkbox v-model="data.is_active" label="Active" />
-      <q-checkbox v-model="data.is_staff" label="Staff" />
-      <q-checkbox v-model="data.is_superuser" label="Superuser" />
+      <q-input v-model="userStore.user.email" type="text" label="Email" />
+      <q-input v-model="userStore.user.first_name" type="text" label="First Name" />
+      <q-input v-model="userStore.user.last_name" type="text" label="Last Name" />
+      <q-checkbox v-model="userStore.user.is_active" label="Active" />
+      <q-checkbox v-model="userStore.user.is_staff" label="Staff" />
+      <q-checkbox v-model="userStore.user.is_superuser" label="Superuser" />
       <div>
-        <q-btn icon="mdi-cancel" label="Cancelar" type="cancel" flat color="primary" />
-        <q-btn icon="mdi-broom" label="Limpar" type="reset" color="primary" flat class="q-ml-sm" />
+        <q-btn color="negative" flat icon="mdi-account-minus-outline" label="Delete" @click="onDelete" />
+        <q-btn icon="mdi-cancel" label="Cancelar" @click="onCancel" flat color="primary" />
         <q-btn icon="mdi-content-save-edit-outline" label="Salvar" type="submit" color="primary" />
       </div>
     </q-form>
@@ -38,6 +36,7 @@ export default defineComponent({
     const router = useRouter()
 
     const data = ref({
+      uuid: computed(() => userStore.user.uuid),
       email: computed(() => userStore.user.email),
       first_name: computed(() => userStore.user.first_name),
       last_name: computed(() => userStore.user.last_name),
@@ -47,21 +46,10 @@ export default defineComponent({
     })
 
     const onSubmit = async() => {
-      const response = await userAPI.createUser(data.value)
+      const response = await userAPI.updateUser(data.value)
       console.log(response)
       if (response) {
         router.push({ name: 'users' })
-      }
-    }
-
-    const onReset = () => {
-      data.value = {
-        email: '',
-        first_name: '',
-        last_name: '',
-        is_active: true,
-        is_staff: false,
-        is_superuser: false
       }
     }
 
@@ -69,10 +57,18 @@ export default defineComponent({
       router.push({ name: 'users' })
     }
 
+    const onDelete = async(uuid) => {
+      const response = await userAPI.deleteUser(data.value.uuid)
+      if (response) {
+        router.push({ name: 'users' })
+      }
+    }
+
     return {
+      onDelete,
+      userStore,
       data,
       onSubmit,
-      onReset,
       onCancel
     }
   }

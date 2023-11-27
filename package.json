@@ -12,6 +12,7 @@
     "build": "quasar build"
   },
   "dependencies": {
+    "@mdi/font": "^7.3.67",
     "@quasar/extras": "^1.16.8",
     "@vueuse/components": "^10.6.1",
     "@vueuse/core": "^10.6.1",

@@ -20,6 +20,7 @@ export default function useUser() {
   }
 
   const updateUser = async (payload) => {
+    console.log(payload)
     try {
       const response = await api.put('/users', payload)
       return response.status

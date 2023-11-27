@@ -10,9 +10,13 @@
       <div>
         <q-table
           title="Usuários"
+          style="height: 40em;"
           :rows="users"
           :columns="columns"
           row-key="name"
+          virtual-scroll
+          v-model:pagination="pagination"
+          :rows-per-page-options="[0]"
         >
           <template v-slot:body="props">
             <q-tr @click="onEdit(props.row)">
@@ -97,7 +101,19 @@ export default defineComponent({
       router.push({ name: 'editUser' })
     }
 
+    // const pagination = ref({
+    //   sortBy: 'email',
+    //   descending: false,
+    //   page: 1,
+    //   rowsPerPage: 10
+    // })
+
+    const pagination = ref({
+      rowsPerPage: 0
+    })
+
     return {
+      pagination,
       users,
       createUser,
       listUsers,
@@ -107,3 +123,34 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+/* Personaliza a barra de rolagem (a alça de rolagem) */
+::-webkit-scrollbar {
+    width: 12px; /* Largura da barra de rolagem */
+    height: 12px; /* Altura da barra de rolagem (para rolagem horizontal) */
+}
+
+/* Personaliza o rastro da barra de rolagem (onde a alça se move) */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Cor de fundo */
+    border-radius: 6px; /* Bordas arredondadas */
+}
+
+/* Personaliza a alça da barra de rolagem */
+::-webkit-scrollbar-thumb {
+    background: #888; /* Cor da alça */
+    border-radius: 6px; /* Bordas arredondadas */
+}
+
+/* Altera a cor da alça ao passar o mouse ou ao clicar */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255, 255, 255) rgb(54, 54, 53); /* alça e trilha */
+}
+</style>
