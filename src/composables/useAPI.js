@@ -1,11 +1,20 @@
 import { api } from 'src/boot/axios'
 export default function useAPI (url) {
-  const list = async () => {
-    try {
-      const data = await api.get(url)
-      return data.data
-    } catch (error) {
-      throw new Error(error)
+  const list = async (name) => {
+    if (name) {
+      try {
+        const data = await api.get(`${url}/?name=${name}`)
+        return data.data
+      } catch (error) {
+        throw new Error(error)
+      }
+    } else {
+      try {
+        const data = await api.get(url)
+        return data.data
+      } catch (error) {
+        throw new Error(error)
+      }
     }
   }
   const update = async (date) => {

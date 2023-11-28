@@ -61,6 +61,12 @@ const linksList = [
     caption: '',
     icon: 'store',
     link: '/products'
+  },
+  {
+    title: 'Caixa',
+    caption: '',
+    icon: 'shopping_cart',
+    link: '/pdv'
   }
 ]
 
