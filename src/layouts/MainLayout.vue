@@ -12,10 +12,12 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          pi2comercio
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>
+          <q-toggle color="red" :icon="$q.dark.isActive ? 'mdi-lightbulb-off' : 'mdi-lightbulb-on'" v-model="isDark" @update:model-value="darkMode(isDark)" />
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -48,19 +50,26 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import { useQuasar } from 'quasar'
 
 const linksList = [
   {
-    title: 'Home',
+    title: 'Dashboard',
     caption: '',
-    icon: 'home',
-    link: '/'
+    icon: 'mdi-monitor-dashboard',
+    link: '/dashboard'
   },
   {
     title: 'Produtos',
     caption: '',
-    icon: 'store',
+    icon: 'mdi-tag-heart-outline',
     link: '/products'
+  },
+  {
+    title: 'Usuários',
+    caption: '',
+    icon: 'mdi-account-heart-outline',
+    link: '/users'
   },
   {
     title: 'Caixa',
@@ -78,9 +87,19 @@ export default defineComponent({
   },
 
   setup () {
+    const $q = useQuasar()
+
     const leftDrawerOpen = ref(false)
 
+    const isDark = $q.dark.isActive
+
+    const darkMode = async (mode) => {
+      $q.dark.set(mode)
+    }
+
     return {
+      isDark,
+      darkMode,
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer () {

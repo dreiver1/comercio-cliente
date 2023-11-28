@@ -48,7 +48,7 @@
           filled
           v-model="image"
           label="Imagem *"
-          @update:model-value="sendImage()"
+          @update:model-value="updateImage"
         />
 
         <div>
@@ -66,29 +66,20 @@ export default defineComponent({
   name: 'IndexPage',
   setup () {
     const route = useRouter()
+    const api = useAPI('products')
     const name = ref('')
     const description = ref('')
     const price = ref('')
     const quantity = ref('')
-    const api = useAPI('products')
-    const image = ref('')
-    const imageURL = ref('')
-    const sendImage = async () => {
-      try {
-        const response = await api.upImage(image.value)
-        console.log(response)
-        imageURL.value = response
-      } catch (error) {
-        throw new Error(error)
-      }
-    }
+    const img = ref('')
+    const image = ref([]) // não pode ser string, pois o componente q-file espera um array
     return {
-      sendImage,
       name,
       price,
       image,
       quantity,
       description,
+      img,
       async onSubmit () {
         try {
           const data = {
@@ -96,7 +87,7 @@ export default defineComponent({
             description: description.value,
             price: price.value,
             quantity: quantity.value,
-            img: imageURL.value
+            img: img.value
           }
           await api.post(data)
           route.push('/products')
@@ -107,6 +98,14 @@ export default defineComponent({
       onReset () {
         try {
           route.push('/products')
+        } catch (error) {
+          throw new Error(error)
+        }
+      },
+      async updateImage () {
+        try {
+          const response = await api.upImage(image.value)
+          img.value = response
         } catch (error) {
           throw new Error(error)
         }

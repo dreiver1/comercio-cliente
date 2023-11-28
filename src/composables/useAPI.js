@@ -17,18 +17,10 @@ export default function useAPI (url) {
       }
     }
   }
-  const update = async (date) => {
+  const update = async (data) => {
     try {
-      const data = await api.put(url, date)
-      return data.status
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-  const post = async (dados) => {
-    try {
-      const data = await api.post(url, dados)
-      return data.status
+      const response = await api.put(url, data)
+      return response.status
     } catch (error) {
       throw new Error(error)
     }
@@ -41,13 +33,19 @@ export default function useAPI (url) {
       throw new Error(error)
     }
   }
-  const upImage = async (image) => {
+  const post = async (payload) => {
+    try {
+      const response = await api.post(url, payload)
+      return response.data
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+  const upImage = async (file) => {
     try {
       const formData = new FormData()
-      formData.append('file', image)
-
-      // Make a POST request with Axios
-      const response = await api.postForm('/products/upload', formData, {
+      formData.append('file', file)
+      const response = await api.postForm(`${url}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
