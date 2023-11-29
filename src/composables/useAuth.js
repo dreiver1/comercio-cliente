@@ -16,6 +16,11 @@ export default function useAuth() {
         }
       })
       authStore.accessToken = response.data.access_token
+      Notify.create({
+        message: 'Login success',
+        type: 'positive',
+        icon: 'check'
+      })
       return response.data
     } catch (error) {
       Notify.create({

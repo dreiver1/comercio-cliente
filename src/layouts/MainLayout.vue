@@ -66,6 +66,12 @@ const linksList = [
     link: '/pdv'
   },
   {
+    title: 'Categorias',
+    caption: '',
+    icon: 'mdi-format-list-group-plus',
+    link: '/categories'
+  },
+  {
     title: 'Produtos',
     caption: '',
     icon: 'mdi-tag-heart-outline',
@@ -76,6 +82,18 @@ const linksList = [
     caption: '',
     icon: 'mdi-account-heart-outline',
     link: '/users'
+  },
+  {
+    title: 'Fornecedores',
+    caption: '',
+    icon: 'mdi-factory',
+    link: '/suppliers'
+  },
+  {
+    title: 'Configurações',
+    caption: '',
+    icon: 'mdi-cog-outline',
+    link: '/settings'
   }
 ]
 
