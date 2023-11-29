@@ -60,6 +60,12 @@ const linksList = [
     link: '/dashboard'
   },
   {
+    title: 'PDV',
+    caption: '',
+    icon: 'mdi-point-of-sale',
+    link: '/pdv'
+  },
+  {
     title: 'Produtos',
     caption: '',
     icon: 'mdi-tag-heart-outline',
@@ -70,12 +76,6 @@ const linksList = [
     caption: '',
     icon: 'mdi-account-heart-outline',
     link: '/users'
-  },
-  {
-    title: 'Caixa',
-    caption: '',
-    icon: 'shopping_cart',
-    link: '/pdv'
   }
 ]
 

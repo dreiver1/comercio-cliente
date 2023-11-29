@@ -19,12 +19,12 @@
   </div>
 
   <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
-    <q-card class="bg-primary text-white" style="width: 600px">
+    <q-card style="width: 600px">
       <q-card-section>
         <div class="text-h6">Adicionar produto</div>
       </q-card-section>
 
-      <q-card-section class="bg-white">
+      <q-card-section>
         <q-input v-model="text" label="Produto:" @update:model-value="findItem"/>
       </q-card-section>
 
@@ -37,7 +37,7 @@
         selection="single"
         v-model:selected="selected"
       />
-      <q-card-actions align="right" class="bg-white text-teal">
+      <q-card-actions align="right" class="text-teal">
         <q-btn flat label="OK" v-close-popup @click="addItem"/>
       </q-card-actions>
     </q-card>

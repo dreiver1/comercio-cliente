@@ -9,7 +9,7 @@ export const usePDVStore = defineStore('pdv', {
     doubleCount: (state) => state.counter * 2
   },
   actions: {
-    increment () {
+    increment() {
       this.counter++
     }
   }
