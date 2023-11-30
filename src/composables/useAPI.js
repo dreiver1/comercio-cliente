@@ -1,22 +1,31 @@
 import { api } from 'src/boot/axios'
 export default function useAPI (url) {
-  const list = async (name) => {
-    if (name) {
-      try {
-        const data = await api.get(`${url}/?name=${name}`)
-        return data.data
-      } catch (error) {
-        throw new Error(error)
-      }
-    } else {
-      try {
-        const data = await api.get(url)
-        return data.data
-      } catch (error) {
-        throw new Error(error)
-      }
+  const getById = async (id) => {
+    try {
+      const response = await api.get(`${url}/?uuid=${id}`)
+      return response.data
+    } catch (error) {
+      throw new Error(error)
     }
   }
+  const getByName = async (name) => {
+    try {
+      const response = await api.get(`${url}/?name__icontains=${name}`)
+      return response.data
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  const list = async () => {
+    try {
+      const response = await api.get(url)
+      return response.data
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
   const update = async (data) => {
     try {
       const response = await api.put(url, data)
@@ -27,8 +36,8 @@ export default function useAPI (url) {
   }
   const remove = async (id) => {
     try {
-      const data = await api.delete(`${url}/${id}`)
-      return data.status
+      const response = await api.delete(`${url}/${id}`)
+      return response.status
     } catch (error) {
       throw new Error(error)
     }
@@ -56,7 +65,9 @@ export default function useAPI (url) {
     }
   }
   return {
+    getById,
     upImage,
+    getByName,
     list,
     update,
     post,

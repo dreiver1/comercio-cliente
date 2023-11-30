@@ -12,9 +12,9 @@
       <div class="text-h6">total = {{ total }}</div>
     </div>
     <div class="col-12 q-pa-md row justify-end">
-      <q-btn class="q-mx-sm" label="concluir" color="primary" @click="persistent = true"/>
+      <q-btn class="q-mx-sm" label="concluir" color="primary" @click="conclude"/>
       <q-btn class="q-mx-sm" label="adicionar" color="white" text-color="black" @click="persistent = true"/>
-      <q-btn class="q-mx-sm" label="cancelar" color="red" @click="persistent = true"/>
+      <q-btn class="q-mx-sm" label="cancelar" color="red" :to="{ name: 'dashboard' }"  />
     </div>
   </div>
 
@@ -50,15 +50,7 @@ import useAPI from 'src/composables/useAPI'
 import { usePDVStore } from 'src/stores/PdvStore'
 
 const itensColumns = [
-  {
-    name: 'name',
-    required: true,
-    label: 'Dessert (100g serving)',
-    align: 'left',
-    field: row => row.name,
-    format: val => `${val}`,
-    sortable: true
-  },
+  { name: 'name', required: true, label: 'Dessert (100g serving)', align: 'left', field: row => row.name, format: val => `${val}`, sortable: true },
   { name: 'quantity', label: 'quantidade', field: 'quantidade', sortable: true },
   { name: 'price', label: 'Preço', field: 'price', sortable: true }
 ]
@@ -86,15 +78,15 @@ export default defineComponent({
       selected.value[0].quantity = 1
       pdv.itens.push(selected.value[0])
       total.value = total.value + selected.value[0].price
-      console.log(selected.value[0].price)
     }
     const text = ref('')
-
+    const conclude = pdv.conclude
     return {
       itensColumns,
       persistent,
       selected,
       findItem,
+      conclude,
       columns,
       addItem,
       itens,

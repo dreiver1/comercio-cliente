@@ -16,7 +16,7 @@ const routes = [
       { path: 'products', name: 'products', component: () => import('src/pages/products/ProductsPage.vue') },
       { path: 'addproduct', name: 'addProducts', component: () => import('src/pages/products/AddProductPage.vue') },
       { path: 'putproduct', name: 'putProducts', component: () => import('src/pages/products/PutProductPage.vue') },
-      { path: 'pdv', component: () => import('src/pages/PdvPage.vue') },
+      { path: 'pdv', name: 'pdv', component: () => import('src/pages/PdvPage.vue') },
       {
         path: 'users/',
         children: [
