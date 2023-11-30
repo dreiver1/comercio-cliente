@@ -17,12 +17,12 @@ export const usePDVStore = defineStore('pdv', {
       const Transation = await this.transation.post({})
       for (let i = 0; i < this.itens.length; i++) {
         const Product = await this.product.getById(this.itens[i].uuid)
-        const response = await this.item.post({
+        const responseData = await this.item.post({
           total_amount: 0,
           product: Product,
           transation: Transation
         })
-        console.log(response)
+        console.log(responseData)
       }
     }
   }
