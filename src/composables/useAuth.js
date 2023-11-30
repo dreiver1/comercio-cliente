@@ -1,5 +1,6 @@
 import { api } from 'src/boot/axios'
 import { useAuthStore } from 'src/stores/authStore'
+import { Notify } from 'quasar'
 
 export default function useAuth() {
   const authStore = useAuthStore()
@@ -15,9 +16,18 @@ export default function useAuth() {
         }
       })
       authStore.accessToken = response.data.access_token
+      Notify.create({
+        message: 'Login success',
+        type: 'positive',
+        icon: 'check'
+      })
       return response.data
     } catch (error) {
-      throw new Error(error)
+      Notify.create({
+        message: 'Login failed, email or password is incorrect',
+        type: 'negative',
+        icon: 'warning'
+      })
     }
   }
 

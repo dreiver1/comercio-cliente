@@ -60,6 +60,18 @@ const linksList = [
     link: '/dashboard'
   },
   {
+    title: 'PDV',
+    caption: '',
+    icon: 'mdi-point-of-sale',
+    link: '/pdv'
+  },
+  {
+    title: 'Categorias',
+    caption: '',
+    icon: 'mdi-format-list-group-plus',
+    link: '/categories'
+  },
+  {
     title: 'Produtos',
     caption: '',
     icon: 'mdi-tag-heart-outline',
@@ -72,10 +84,16 @@ const linksList = [
     link: '/users'
   },
   {
-    title: 'Caixa',
+    title: 'Fornecedores',
     caption: '',
-    icon: 'shopping_cart',
-    link: '/pdv'
+    icon: 'mdi-factory',
+    link: '/suppliers'
+  },
+  {
+    title: 'Configurações',
+    caption: '',
+    icon: 'mdi-cog-outline',
+    link: '/settings'
   }
 ]
 
