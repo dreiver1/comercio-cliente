@@ -1,5 +1,5 @@
 <template>
-  <q-page class="row flex-center full-widht">
+  <q-page padding>
     <!-- <div class="text-h1">PRODUTOS</div> -->
     <div class="coulumn col-9 itens-end">
         <q-btn label="Adicionar produto" to="/addproduct"/>
