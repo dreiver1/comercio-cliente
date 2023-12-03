@@ -1,34 +1,35 @@
 <template>
-  <q-dialog v-model="billStore.billDialog" persistent>
+  <q-dialog v-model="billStore.billEditDialog" persistent>
     <q-card style="min-width: 50%;">
       <q-card-section class="col items-center q-gutter-lg">
+        <q-input style="width: 30%;" flat dense filled disable v-model="billStore.billEdit.uuid" />
         <div class="row q-gutter-md">
-          <q-input filled style="width: 60%;" v-model="data.reference" type="text" label="Referência" />
-          <q-input filled v-model="data.value" label="Valor" mask="#.##" reverse-fill-mask input-class="text-right" />
+          <q-input filled style="width: 60%;" v-model="billStore.billEdit.reference" type="text" label="Referência" />
+          <q-input filled v-model="billStore.billEdit.value" label="Valor" mask="#.##" reverse-fill-mask input-class="text-right" />
           <q-space />
-          <div v-if="data.is_paid == false">
-            <q-icon v-if ="data.due_date == ''" size="4rem" color="white" name="mdi-calendar-alert-outline" />
-            <q-icon v-else-if="dateNow < data.due_date" size="4rem" color="yellow" name="mdi-calendar-alert-outline" />
-            <q-icon v-else-if="dateNow >= data.due_date" size="4rem" color="red" name="mdi-calendar-alert-outline" />
+          <div v-if="billStore.billEdit.is_paid == false">
+            <q-icon v-if ="billStore.billEdit.due_date == ''" size="4rem" color="white" name="mdi-calendar-alert-outline" />
+            <q-icon v-else-if="dateNow < billStore.billEdit.due_date" size="4rem" color="yellow" name="mdi-calendar-alert-outline" />
+            <q-icon v-else-if="dateNow >= billStore.billEdit.due_date" size="4rem" color="red" name="mdi-calendar-alert-outline" />
           </div>
           <div v-else>
             <q-icon size="4rem" color="green" name="mdi-calendar-check-outline" />
           </div>
         </div>
         <div class="row q-gutter-md">
-          <q-input filled style="width: 48%;" v-model="data.business" type="text" label="Empresa" />
+          <q-input filled style="width: 48%;" v-model="billStore.billEdit.business" type="text" label="Empresa" />
           <!-- CALENDAR DUE DATE -->
-          <q-input filled style="width: 35%;" v-model="data.due_date" mask="####-##-##" label="Data de vencimento" >
+          <q-input filled style="width: 35%;" v-model="billStore.billEdit.due_date" label="Data de vencimento" >
             <template v-slot:append>
               <q-icon name="mdi-calendar-month-outline" />
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-date
-                  v-model="data.due_date"
+                  v-model="billStore.billEdit.due_date"
                   landscape
                   minimal
                 >
                 <div class="row">
-                  {{ data.due_date }}
+                  {{ date.formatDate(billStore.billEdit.due_date, 'DD/MM/YYYY') }}
                   <q-space />
                   <q-btn v-close-popup no-caps label="Fechar" color="primary" flat />
                 </div>
@@ -38,28 +39,28 @@
           </q-input>
         </div>
         <div class="q-gutter-md">
-          <q-input filled v-model="data.febraban" type="text" label="Febraban">
+          <q-input filled v-model="billStore.billEdit.febraban" type="text" label="Febraban">
             <template v-slot:append>
               <q-btn flat dense icon="mdi-qrcode" @click="showQRCode = true" />
             </template>
           </q-input>
-          <q-input filled class="col-5" v-model="data.description" type="text" label="Descrição" />
+          <q-input filled class="col-5" v-model="billStore.billEdit.description" type="text" label="Descrição" />
         </div>
         <q-dialog v-model="showQRCode">
           <q-img :src="qrcode.value" />
         </q-dialog>
         <div class="row q-gutter-md">
-          <q-input filled style="width: 35%;" v-model="data.payment_date" mask="####-##-##" label="Data de Pagamento" >
+          <q-input filled style="width: 35%;" v-model="billStore.billEdit.payment_date" label="Data de Pagamento" >
             <template v-slot:append>
               <q-icon name="mdi-calendar-month-outline" />
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                 <q-date
-                  v-model="data.payment_date"
+                  v-model="billStore.billEdit.payment_date"
                   landscape
                   minimal
                 >
                 <div class="row">
-                  {{ data.payment_date }}
+                  {{ billStore.billEdit.payment_date }}
                   <q-space />
                   <q-btn v-close-popup no-caps label="Fechar" color="primary" flat />
                 </div>
@@ -67,12 +68,12 @@
               </q-popup-proxy>
             </template>
           </q-input>
-          <q-input filled style="width: 40%;" v-model="data.payment_method" type="text" label="Método de Pagamento" />
+          <q-input filled style="width: 40%;" v-model="billStore.billEdit.payment_method" type="text" label="Método de Pagamento" />
         </div>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn flat icon="mdi-cancel" label="Cancel" color="primary" v-close-popup @click="clearData" />
-        <q-btn flat icon="mdi-content-save-edit-outline" label="Salvar" color="primary" v-close-popup @click="handleCreateBill" />
+        <q-btn flat icon="mdi-cancel" label="Cancel" color="primary" v-close-popup />
+        <q-btn flat icon="mdi-content-save-edit-outline" label="Salvar" color="primary" v-close-popup @click="handleUpdateBill" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -82,69 +83,44 @@
 import { defineComponent, ref, computed } from 'vue'
 import { useBillStore } from 'src/stores/billsStore'
 import useBills from 'src/composables/useBills'
-// import { useQRCode } from '@vueuse/integrations/useQRCode'
 import { date } from 'quasar'
 import qrCode from 'src/composables/qrCodeGenerator'
 
 export default defineComponent({
-  name: 'BillsCreateUpdate',
+  name: 'BillsCreate',
   setup() {
     const billStore = useBillStore()
 
     const billAPI = useBills()
 
-    const form = ref(null)
+    const data = billStore.billEdit
+
+    console.log(data)
 
     const showQRCode = ref(false)
 
     const dateNow = date.formatDate(Date(), 'YYYY-MM-DD')
 
-    const data = ref({
-      business: '',
-      reference: '',
-      value: null,
-      febraban: '',
-      is_paid: false,
-      description: '',
-      due_date: dateNow,
-      payment_date: null,
-      payment_method: ''
-    })
-
     const qrcode = computed(() => {
-      return qrCode(data.value.febraban)
+      return qrCode(billStore.billEdit.febraban)
     })
 
-    const clearData = () => {
-      data.value = {
-        business: '',
-        reference: '',
-        value: null,
-        febraban: '',
-        is_paid: false,
-        description: '',
-        due_date: dateNow,
-        payment_date: null,
-        payment_method: ''
-      }
-    }
-
-    const handleCreateBill = async () => {
-      await billAPI.createBill(data.value)
+    const handleUpdateBill = async () => {
+      billStore.billEdit.payment_date = date.formatDate(billStore.billEdit.payment_date, 'YYYY-MM-DD')
+      billStore.billEdit.due_date = date.formatDate(billStore.billEdit.due_date, 'YYYY-MM-DD')
+      await billAPI.updateBill(billStore.billEdit)
       const response = await billAPI.getBills()
       billStore.billList = response
-      await clearData()
     }
 
     return {
       data,
-      form,
+      date,
       qrcode,
       dateNow,
       billStore,
       showQRCode,
-      clearData,
-      handleCreateBill
+      handleUpdateBill
     }
   }
 })

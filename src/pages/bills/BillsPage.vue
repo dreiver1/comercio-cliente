@@ -13,7 +13,6 @@
       title="Contas"
       :rows="rows"
       :columns="columns"
-      row-key="name"
     >
       <template v-slot:top-right>
         <q-avatar size="xl" font-size="2.5rem" icon="mdi-plus" @click="billStore.billDialog = true" />
@@ -78,29 +77,33 @@
           </q-td>
 
           <q-td key="actions" :props="props">
-            <q-btn size="1.2em" text-color="primary" dense flat icon="mdi-pencil-outline" @click="billStore.edit(props.row)" />
+            <q-btn size="1.2em" text-color="primary" dense flat icon="mdi-pencil-outline" @click="handleEdit(props.row)" />
             <q-btn size="1.2em" text-color="negative" dense flat icon="mdi-delete-outline" @click="handleDelete(props.row.uuid)" />
           </q-td>
 
         </q-tr>
       </template>
     </q-table>
-    <BillsCreateUpdate />
+    <BillsCreate />
+    <BillEdit />
   </q-page>
 </template>
 
 <script>
 import { defineComponent, ref, onMounted, computed } from 'vue'
 import useBills from 'src/composables/useBills'
-import BillsCreateUpdate from 'src/components/bills/BillsCreateUpdate.vue'
+import BillsCreate from 'src/components/bills/BillsCreate.vue'
+import BillEdit from 'src/components/bills/BillEdit.vue'
 import { useBillStore } from 'src/stores/billsStore'
 import { date } from 'quasar'
 import qrCode from 'src/composables/qrCodeGenerator'
+import dateFormatedBR from 'src/composables/formatDate'
 
 export default defineComponent({
   name: 'BillsPage',
   components: {
-    BillsCreateUpdate
+    BillsCreate,
+    BillEdit
   },
   setup() {
     const billAPI = useBills()
@@ -117,62 +120,14 @@ export default defineComponent({
         align: 'left',
         sortable: true
       },
-      {
-        name: 'reference',
-        label: 'Referência',
-        field: 'reference',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'value',
-        label: 'Valor',
-        field: 'value',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'febraban',
-        label: 'Febraban',
-        field: 'febraban',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'description',
-        label: 'Descrição',
-        field: 'description',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'due_date',
-        label: 'Vencimento',
-        field: 'due_date',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'payment_method',
-        label: 'Método de Pagamento',
-        field: 'payment_method',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'payment_date',
-        label: 'Data de Pagamento',
-        field: 'payment_date',
-        align: 'left',
-        sortable: true
-      },
-      {
-        name: 'actions',
-        label: 'Ações',
-        field: 'actions',
-        align: 'left',
-        sortable: true
-      }
+      { name: 'reference', label: 'Referência', field: 'reference', align: 'left', sortable: true },
+      { name: 'value', label: 'Valor', field: 'value', align: 'left', sortable: true },
+      { name: 'febraban', label: 'Febraban', field: 'febraban', align: 'left', sortable: true },
+      { name: 'description', label: 'Descrição', field: 'description', align: 'left', sortable: true },
+      { name: 'due_date', label: 'Vencimento', field: 'due_date', align: 'left', sortable: true },
+      { name: 'payment_method', label: 'Método de Pagamento', field: 'payment_method', align: 'left', sortable: true },
+      { name: 'payment_date', label: 'Data de Pagamento', field: 'payment_date', align: 'left', sortable: true },
+      { name: 'actions', label: 'Ações', field: 'actions', align: 'left', sortable: true }
     ]
 
     const rows = ref(computed(() => billStore.billList))
@@ -199,11 +154,12 @@ export default defineComponent({
     }
 
     const formatDate = (date) => {
-      if (!date) {
-        return ''
-      }
-      const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
-      return new Date(date).toLocaleDateString('pt-BR', options)
+      return dateFormatedBR(date)
+    }
+
+    const handleEdit = (row) => {
+      billStore.billEdit = row
+      billStore.billEditDialog = true
     }
 
     return {
@@ -215,6 +171,7 @@ export default defineComponent({
       febraban,
       billStore,
       showQRCode,
+      handleEdit,
       formatDate,
       handleDelete
     }
