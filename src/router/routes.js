@@ -24,6 +24,14 @@ const routes = [
           { path: 'create', name: 'createUser', component: () => import('src/pages/auth/CreateUserPage.vue') },
           { path: 'edit', name: 'editUser', component: () => import('src/pages/auth/EditUserPage.vue') }
         ]
+      },
+      {
+        path: 'bills/',
+        children: [
+          { path: '', name: 'bills', component: () => import('src/pages/bills/BillsPage.vue') },
+          { path: 'create', name: 'createBill', component: () => import('src/pages/bills/CreateBillPage.vue') },
+          { path: 'edit', name: 'editBill', component: () => import('src/pages/bills/EditBillPage.vue') }
+        ]
       }
     ],
     meta: {

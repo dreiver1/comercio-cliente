@@ -67,7 +67,7 @@ const linksList = [
   },
   {
     title: 'Categorias',
-    caption: '',
+    caption: 'Not applicable',
     icon: 'mdi-format-list-group-plus',
     link: '/categories'
   },
@@ -85,13 +85,19 @@ const linksList = [
   },
   {
     title: 'Fornecedores',
-    caption: '',
+    caption: 'Not applicable',
     icon: 'mdi-factory',
     link: '/suppliers'
   },
   {
-    title: 'Configurações',
+    title: 'Contas',
     caption: '',
+    icon: 'mdi-cash-multiple',
+    link: '/bills'
+  },
+  {
+    title: 'Configurações',
+    caption: 'Not applicable',
     icon: 'mdi-cog-outline',
     link: '/settings'
   }
