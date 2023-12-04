@@ -4,7 +4,7 @@ import useAPI from 'src/composables/useAPI'
 
 export const usePDVStore = defineStore('pdv', {
   state: () => ({
-    itens: ref([]),
+    items: ref([]),
     product: useAPI('products'),
     transation: useAPI('transation'),
     item: useAPI('itens'),
