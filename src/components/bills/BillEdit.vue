@@ -7,7 +7,7 @@
           <q-input filled style="width: 60%;" v-model="billStore.billEdit.reference" type="text" label="Referência" />
           <q-input filled v-model="billStore.billEdit.value" label="Valor" mask="#.##" reverse-fill-mask input-class="text-right" />
           <q-space />
-          <div v-if="billStore.billEdit.is_paid == false">
+          <div v-if="billStore.billEdit.payment_date == false">
             <q-icon v-if ="billStore.billEdit.due_date == ''" size="4rem" color="white" name="mdi-calendar-alert-outline" />
             <q-icon v-else-if="dateNow < billStore.billEdit.due_date" size="4rem" color="yellow" name="mdi-calendar-alert-outline" />
             <q-icon v-else-if="dateNow >= billStore.billEdit.due_date" size="4rem" color="red" name="mdi-calendar-alert-outline" />

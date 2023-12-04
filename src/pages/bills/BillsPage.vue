@@ -49,13 +49,13 @@
           </q-td>
 
           <q-td key="due_date" :props="props">
-            <div v-if="props.row.is_paid == true">
+            <div v-if="props.row.payment_date">
               {{ formatDate(props.row.due_date) }}
-              <q-icon color="green" name="mdi-calendar-check-outline" />
+              <q-icon size="md" color="green" name="mdi-calendar-check-outline" />
             </div>
             <div v-else-if="props.row.due_date < dateNow">
               {{ formatDate(props.row.due_date) }}
-              <q-icon name="mdi-calendar-alert-outlin" />
+              <q-icon size="md" name="mdi-calendar-alert-outlin" />
             </div>
             <div v-else-if="props.row.due_date >= dateNow">
               {{ formatDate(props.row.due_date) }}
