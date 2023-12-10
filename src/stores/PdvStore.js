@@ -23,7 +23,6 @@ export const usePDVStore = defineStore('pdv', {
           product: Product[0],
           transation: Transation
         }
-        console.log(payload)
         const responseData = await this.item.post(payload)
         console.log(responseData)
       }

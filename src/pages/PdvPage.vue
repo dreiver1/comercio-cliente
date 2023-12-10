@@ -30,7 +30,7 @@
       <q-table
       bordered
       title="Treats"
-      :rows="items"
+      :rows="AddItems"
       :columns="itemsColumns"
       row-key="name"
       selection="single"
@@ -50,7 +50,7 @@
           <q-td key="quantity" :props="props">
             {{ props.row.quantity }}
             <q-popup-edit v-model="props.row.quantity" v-slot="scope">
-              <q-input type="number" v-model="scope.value" dense autofocus />
+              <q-input type="number" v-model="scope.value" dense autofocus @update:model-value="props.row.quantity= parseInt(scope.value)" />
             </q-popup-edit>
           </q-td>
           <q-td key="price" :props="props">
@@ -98,14 +98,14 @@ export default defineComponent({
   name: 'IndexPage',
   setup () {
     const newOrder = () => {
-      pdv.items = []
+      pdv.$reset()
     }
     const finalize = ref(false)
     const persistent = ref(false)
     const pdv = usePDVStore()
-    const rows = pdv.items
+    const rows = ref(pdv.items)
     const products = useAPI('products')
-    const items = ref([])
+    const AddItems = ref([])
     const findItem = async (name) => {
       const product = await products.list(name)
       const updatedItems = product.map((item) => {
@@ -114,19 +114,31 @@ export default defineComponent({
           quantity: item.quantity / item.quantity
         }
       })
-      items.value = updatedItems
+      AddItems.value = updatedItems
     }
     const total = ref(0)
     const selected = ref([])
+    let itemAlreadyExist = false
     const addItem = () => {
-      selected.value[0].quantity = 1
-      pdv.items.push(selected.value[0])
+      pdv.items.forEach(element => {
+        if (element.uuid === selected.value[0].uuid) {
+          element.quantity += parseInt(selected.value[0].quantity)
+          itemAlreadyExist = true
+        }
+      })
+      if (!itemAlreadyExist) {
+        pdv.items.push(selected.value[0])
+      }
       total.value = total.value + selected.value[0].price
+      AddItems.value = []
     }
     const text = ref('')
     const conclude = () => {
+      pdv.$reset()
       pdv.conclude()
       finalize.value = true
+      rows.value = []
+      total.value = 0
     }
     return {
       itemsColumns,
@@ -136,9 +148,9 @@ export default defineComponent({
       conclude,
       finalize,
       newOrder,
+      AddItems,
       columns,
       addItem,
-      items,
       total,
       text,
       rows
