@@ -2,8 +2,8 @@
   <div class="row full-width items-center justify-center">
     <div class="q-pa-md col-12">
       <q-table
-        title="Vendas"
-        :rows="rows"
+        title="Venda"
+        :rows="OrderRows"
         :columns="columns"
         row-key="name"
       />
@@ -25,12 +25,12 @@
       </q-card-section>
 
       <q-card-section>
-        <q-input v-model="text" label="Produto:" @update:model-value="findItem"/>
+        <q-input v-model="search" label="Produto:" @update:model-value="findItem"/>
       </q-card-section>
       <q-table
       bordered
-      title="Treats"
-      :rows="AddItems"
+      title="Adicionar"
+      :rows="SearchRows"
       :columns="itemsColumns"
       row-key="name"
       selection="single"
@@ -50,7 +50,7 @@
           <q-td key="quantity" :props="props">
             {{ props.row.quantity }}
             <q-popup-edit v-model="props.row.quantity" v-slot="scope">
-              <q-input type="number" v-model="scope.value" dense autofocus @update:model-value="props.row.quantity= parseInt(scope.value)" />
+              <q-input type="number" v-model="scope.value" dense autofocus @update:model-value="updadeSearhRows(scope.value, props.row.uuid)" />
             </q-popup-edit>
           </q-td>
           <q-td key="price" :props="props">
@@ -79,7 +79,6 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
-import useAPI from 'src/composables/useAPI'
 import { usePDVStore } from 'src/stores/PdvStore'
 
 const itemsColumns = [
@@ -100,24 +99,33 @@ export default defineComponent({
     const newOrder = () => {
       pdv.$reset()
     }
+    const updadeSearhRows = (newQuantity, rowId) => {
+      console.log(rowId, newQuantity)
+      console.log(SearchRows.value[0])
+      for (let i = 0; i < SearchRows.value.length; i++) {
+        if (SearchRows.value[i].uuid === rowId) {
+          SearchRows.value[i].quantity = parseInt(newQuantity)
+        }
+      }
+    }
     const finalize = ref(false)
     const persistent = ref(false)
     const pdv = usePDVStore()
-    const rows = ref(pdv.items)
-    const products = useAPI('products')
-    const AddItems = ref([])
+    const OrderRows = ref(pdv.items)
+    const SearchRows = ref([])
     const findItem = async (name) => {
-      const product = await products.list(name)
+      const product = await pdv.product.getByName(name)
+      console.log(product)
       const updatedItems = product.map((item) => {
         return {
           ...item,
           quantity: item.quantity / item.quantity
         }
       })
-      AddItems.value = updatedItems
+      SearchRows.value = updatedItems
     }
     const total = ref(0)
-    const selected = ref([])
+    const selected = ref()
     let itemAlreadyExist = false
     const addItem = () => {
       pdv.items.forEach(element => {
@@ -130,30 +138,34 @@ export default defineComponent({
         pdv.items.push(selected.value[0])
       }
       total.value = total.value + selected.value[0].price
-      AddItems.value = []
+      itemAlreadyExist = false
+      search.value = ''
+      selected.value = []
     }
-    const text = ref('')
+    const search = ref('')
     const conclude = () => {
       pdv.$reset()
       pdv.conclude()
       finalize.value = true
-      rows.value = []
+      OrderRows.value = []
       total.value = 0
     }
     return {
+      updadeSearhRows,
       itemsColumns,
       persistent,
+      SearchRows,
+      OrderRows,
       selected,
       findItem,
       conclude,
       finalize,
       newOrder,
-      AddItems,
       columns,
       addItem,
+      search,
       total,
-      text,
-      rows
+      pdv
     }
   }
 })
