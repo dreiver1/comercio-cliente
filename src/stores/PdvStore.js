@@ -8,7 +8,8 @@ export const usePDVStore = defineStore('pdv', {
     product: useAPI('products'),
     transation: useAPI('transation'),
     item: useAPI('itens'),
-    transationId: ref('')
+    transationId: ref(''),
+    total: ref(0)
   }),
   getters: {
     doubleCount: (state) => state.counter * 2

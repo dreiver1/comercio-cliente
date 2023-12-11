@@ -9,7 +9,7 @@
       />
     </div>
     <div class="bg-primary text-white col-12 q-pa-md row flex-center">
-      <div class="text-h6">total = {{ total }}</div>
+      <div class="text-h6">total = {{ pdv.total }}</div>
     </div>
     <div class="col-12 q-pa-md row justify-end">
       <q-btn class="q-mx-sm" label="concluir" color="primary" @click="conclude"/>
@@ -124,7 +124,6 @@ export default defineComponent({
       })
       SearchRows.value = updatedItems
     }
-    const total = ref(0)
     const selected = ref()
     let itemAlreadyExist = false
     const addItem = () => {
@@ -132,15 +131,17 @@ export default defineComponent({
         if (element.uuid === selected.value[0].uuid) {
           element.quantity += parseInt(selected.value[0].quantity)
           itemAlreadyExist = true
+          pdv.total = pdv.total + (selected.value[0].price * selected.value[0].quantity)
         }
       })
       if (!itemAlreadyExist) {
         pdv.items.push(selected.value[0])
       }
-      total.value = total.value + selected.value[0].price
+      pdv.total = pdv.total + (selected.value[0].price * selected.value[0].quantity)
       itemAlreadyExist = false
       search.value = ''
-      selected.value = []
+      selected.value.pop()
+      SearchRows.value = []
     }
     const search = ref('')
     const conclude = () => {
@@ -148,7 +149,6 @@ export default defineComponent({
       pdv.conclude()
       finalize.value = true
       OrderRows.value = []
-      total.value = 0
     }
     return {
       updadeSearhRows,
@@ -164,7 +164,6 @@ export default defineComponent({
       columns,
       addItem,
       search,
-      total,
       pdv
     }
   }
