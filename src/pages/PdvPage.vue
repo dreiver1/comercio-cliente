@@ -3,7 +3,7 @@
     <div class="q-pa-md col-12">
       <q-table
         title="Venda"
-        :rows="OrderRows"
+        :rows="pdv.items"
         :columns="columns"
         row-key="name"
       />
@@ -111,7 +111,6 @@ export default defineComponent({
     const finalize = ref(false)
     const persistent = ref(false)
     const pdv = usePDVStore()
-    const OrderRows = ref(pdv.items)
     const SearchRows = ref([])
     const findItem = async (name) => {
       const product = await pdv.product.getByName(name)
@@ -131,13 +130,13 @@ export default defineComponent({
         if (element.uuid === selected.value[0].uuid) {
           element.quantity += parseInt(selected.value[0].quantity)
           itemAlreadyExist = true
-          pdv.total = pdv.total + (selected.value[0].price * selected.value[0].quantity)
+          pdv.total += (selected.value[0].price * selected.value[0].quantity)
         }
       })
       if (!itemAlreadyExist) {
         pdv.items.push(selected.value[0])
       }
-      pdv.total = pdv.total + (selected.value[0].price * selected.value[0].quantity)
+      pdv.total += (selected.value[0].price * selected.value[0].quantity)
       itemAlreadyExist = false
       search.value = ''
       selected.value.pop()
@@ -145,17 +144,15 @@ export default defineComponent({
     }
     const search = ref('')
     const conclude = () => {
-      pdv.$reset()
+      pdv.showItems()
       pdv.conclude()
       finalize.value = true
-      OrderRows.value = []
     }
     return {
       updadeSearhRows,
       itemsColumns,
       persistent,
       SearchRows,
-      OrderRows,
       selected,
       findItem,
       conclude,

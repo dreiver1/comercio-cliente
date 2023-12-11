@@ -15,10 +15,16 @@ export const usePDVStore = defineStore('pdv', {
     doubleCount: (state) => state.counter * 2
   },
   actions: {
+    showItems () {
+      console.log(this.items.length)
+    },
     async conclude () {
       const Transation = await this.transation.post({})
-      for (let i = 0; i < this.itens.length; i++) {
-        const Product = await this.product.getById(this.itens[i].uuid)
+      for (let i = 0; i < this.items.length; i++) {
+        console.log(this.items[i])
+        console.log('dentro do for')
+        console.log(this.items[i] + 'aqui')
+        const Product = await this.product.getById(this.items[i].uuid)
         const payload = {
           total_amount: Product[0].quantity,
           product: Product[0],
