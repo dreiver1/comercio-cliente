@@ -4,7 +4,7 @@
       <q-table
         title="Venda"
         :rows="pdv.items"
-        :columns="columns"
+        :columns="pdv.orderColumns"
         row-key="name"
       />
     </div>
@@ -13,28 +13,28 @@
     </div>
     <div class="col-12 q-pa-md row justify-end">
       <q-btn class="q-mx-sm" label="concluir" color="primary" @click="conclude"/>
-      <q-btn class="q-mx-sm" label="adicionar" color="white" text-color="black" @click="persistent = true"/>
+      <q-btn class="q-mx-sm" label="adicionar" color="white" text-color="black" @click="pdv.persistent = true"/>
       <q-btn class="q-mx-sm" label="cancelar" color="red" :to="{ name: 'dashboard' }"  />
     </div>
   </div>
 
-  <q-dialog v-model="persistent" persistent transition-show="scale" transition-hide="scale">
+  <q-dialog v-model="pdv.persistent" persistent transition-show="scale" transition-hide="scale">
     <q-card style="width: 600px">
       <q-card-section>
         <div class="text-h6">Adicionar produto</div>
       </q-card-section>
 
       <q-card-section>
-        <q-input v-model="search" label="Produto:" @update:model-value="findItem"/>
+        <q-input v-model="pdv.search" label="Produto:" @update:model-value="findItem"/>
       </q-card-section>
       <q-table
       bordered
       title="Adicionar"
-      :rows="SearchRows"
-      :columns="itemsColumns"
+      :rows="pdv.searchRows"
+      :columns="pdv.serchColumns"
       row-key="name"
       selection="single"
-      v-model:selected="selected"
+      v-model:selected="pdv.selected"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -64,7 +64,7 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
-  <q-dialog v-model="finalize" persistent transition-show="scale" transition-hide="scale">
+  <q-dialog v-model="pdv.finalize" persistent transition-show="scale" transition-hide="scale">
     <q-card style="width: 600px">
       <q-card-section>
         <div class="text-h6">Venda finalizada</div>
@@ -78,20 +78,8 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { usePDVStore } from 'src/stores/PdvStore'
-
-const itemsColumns = [
-  { name: 'name', required: true, label: 'Nome', field: row => row.name, format: val => `${val}`, sortable: true },
-  { name: 'quantity', label: 'quantidade', field: 'quantity', sortable: true },
-  { name: 'price', label: 'Preço', field: 'price', sortable: true },
-  { name: 'selected' }
-]
-const columns = [
-  { name: 'name', required: true, label: 'Produto', field: 'name' },
-  { name: 'quantity', label: 'quantidade', field: 'quantity', sortable: true },
-  { name: 'price', label: 'Preço', field: 'price', sortable: true }
-]
 
 export default defineComponent({
   name: 'IndexPage',
@@ -100,67 +88,51 @@ export default defineComponent({
       pdv.$reset()
     }
     const updadeSearhRows = (newQuantity, rowId) => {
-      console.log(rowId, newQuantity)
-      console.log(SearchRows.value[0])
-      for (let i = 0; i < SearchRows.value.length; i++) {
-        if (SearchRows.value[i].uuid === rowId) {
-          SearchRows.value[i].quantity = parseInt(newQuantity)
+      for (let i = 0; i < pdv.searchRows.length; i++) {
+        if (pdv.searchRows[i].uuid === rowId) {
+          pdv.searchRows[i].quantity = parseInt(newQuantity)
         }
       }
     }
-    const finalize = ref(false)
-    const persistent = ref(false)
     const pdv = usePDVStore()
-    const SearchRows = ref([])
     const findItem = async (name) => {
       const product = await pdv.product.getByName(name)
-      console.log(product)
       const updatedItems = product.map((item) => {
         return {
           ...item,
           quantity: item.quantity / item.quantity
         }
       })
-      SearchRows.value = updatedItems
+      pdv.searchRows = updatedItems
     }
-    const selected = ref()
     let itemAlreadyExist = false
     const addItem = () => {
       pdv.items.forEach(element => {
-        if (element.uuid === selected.value[0].uuid) {
-          element.quantity += parseInt(selected.value[0].quantity)
+        if (element.uuid === pdv.selected[0].uuid) {
+          element.quantity += parseInt(pdv.selected[0].quantity)
           itemAlreadyExist = true
-          pdv.total += (selected.value[0].price * selected.value[0].quantity)
+          pdv.total += (pdv.selected[0].price * pdv.selected[0].quantity)
         }
       })
       if (!itemAlreadyExist) {
-        pdv.items.push(selected.value[0])
+        pdv.items.push(pdv.selected[0])
       }
-      pdv.total += (selected.value[0].price * selected.value[0].quantity)
+      pdv.total += (pdv.selected[0].price * pdv.selected[0].quantity)
       itemAlreadyExist = false
-      search.value = ''
-      selected.value.pop()
-      SearchRows.value = []
+      pdv.search = ''
+      pdv.selected.pop()
+      pdv.searchRows = []
     }
-    const search = ref('')
     const conclude = () => {
-      pdv.showItems()
       pdv.conclude()
-      finalize.value = true
+      pdv.finalize = true
     }
     return {
       updadeSearhRows,
-      itemsColumns,
-      persistent,
-      SearchRows,
-      selected,
       findItem,
       conclude,
-      finalize,
       newOrder,
-      columns,
       addItem,
-      search,
       pdv
     }
   }
