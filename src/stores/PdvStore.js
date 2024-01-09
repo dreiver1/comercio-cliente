@@ -43,6 +43,10 @@ export const usePDVStore = defineStore('pdv', {
         const responseData = await this.item.post(payload)
         console.log(responseData)
       }
+    },
+    async printInvoice () {
+
     }
+
   }
 })
