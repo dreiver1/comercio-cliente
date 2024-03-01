@@ -35,7 +35,7 @@ export default defineComponent({
 
     const login = async() => {
       await authAPI.login(data.value)
-      if (authStore.validateToken) {
+      if (authStore.accessToken !== '' && authStore.accessToken != null) {
         router.push({ name: 'dashboard' })
       }
     }

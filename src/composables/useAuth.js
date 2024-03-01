@@ -7,22 +7,24 @@ export default function useAuth() {
 
   const login = async (data) => {
     try {
-      const payload = new FormData()
-      payload.append('username', data.email)
-      payload.append('password', data.password)
-      const response = await api.postForm('/auth/token', payload, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      })
-      authStore.accessToken = response.data.access_token
-      Notify.create({
-        message: 'Login success',
-        type: 'positive',
-        icon: 'check'
-      })
+      const payload = {
+        email: data.email,
+        password: data.password
+      }
+      authStore.accessToken = ''
+      const response = await api.post('/user/login', payload)
+      authStore.accessToken = response.data.token
+
+      if (authStore.accessToken !== '' && authStore.accessToken !== null && typeof variavel !== 'undefined') {
+        Notify.create({
+          message: 'Login success',
+          type: 'positive',
+          icon: 'check'
+        })
+      }
       return response.data
     } catch (error) {
+      console.log(error)
       Notify.create({
         message: 'Login failed, email or password is incorrect',
         type: 'negative',
@@ -33,7 +35,7 @@ export default function useAuth() {
 
   const getMe = async () => {
     try {
-      const response = await api.get('/auth/me')
+      const response = await api.get('/user/login')
       return response.data
     } catch (error) {
       throw new Error(error)

@@ -11,7 +11,7 @@
     <div class="row q-gutter-md">
       <q-img
         v-if="newImg === null"
-        :src="img"
+        :src="product.pictures ? `${product.pictures[0].source}` : `http://localhost:8080/files/1709230306766_27562_EES-Still.jpg`"
         :ratio="16/9"
         spinner-color="primary"
         spinner-size="82px"
@@ -19,7 +19,7 @@
       />
       <q-img
         v-else
-        :src="`http://localhost:8000/${img}`"
+        :src="product.pictures ? `${product.pictures[0].source}` : `http://localhost:8080/files/1709230306766_27562_EES-Still.jpg`"
         :ratio="16/9"
         spinner-color="primary"
         spinner-size="82px"
@@ -38,7 +38,7 @@
 
       <q-input
         filled
-        v-model="name"
+        v-model="product.title"
         label="Nome do produto *"
         lazy-rules
         :rules="[ val => val && val.length > 3 || 'Por favor digite o nome do produto']"
@@ -46,14 +46,14 @@
 
       <q-input
         filled
-        v-model="description"
+        v-model="product.description"
         label="Descrição"
       />
 
       <q-input
         filled
         type="number"
-        v-model="price"
+        v-model="product.price"
         label="Preço *"
         lazy-rules
         :rules="[
@@ -64,7 +64,7 @@
       <q-input
         filled
         type="number"
-        v-model="quantity"
+        v-model="product.available_quantity"
         label="Quantidade *"
         lazy-rules
         :rules="[
@@ -81,7 +81,7 @@
   </q-page>
 </template>
 <script>
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref } from 'vue'
 import useAPI from 'src/composables/useAPI'
 import { useRouter } from 'vue-router'
 import { useProductsStore } from 'src/stores/ProductsStore'
@@ -91,24 +91,12 @@ export default defineComponent({
   setup () {
     const product = useProductsStore()
     const route = useRouter()
-    const api = useAPI('products')
-    const name = ref('')
-    const description = ref('')
-    const price = ref(0.00)
-    const quantity = ref(0.00)
+    const api = useAPI('item')
     const Id = product.id
-    const img = ref('')
     const newImg = ref(null)
-    onMounted(() => {
-      name.value = product.name
-      description.value = product.description
-      price.value = product.price
-      quantity.value = product.quantity
-      img.value = product.img
-    })
     const deleteProduct = async () => {
       try {
-        await api.remove(Id)
+        await api.remove(Id, product.condition)
         route.push('/products')
       } catch (error) {
         throw new Error(error)
@@ -117,29 +105,25 @@ export default defineComponent({
     const updateImage = async () => {
       try {
         const response = await api.upImage(newImg.value)
-        img.value = response
+        product.img.value = response
       } catch (error) {
         throw new Error(error)
       }
     }
     return {
       updateImage,
-      name,
-      description,
-      price,
-      quantity,
-      img,
+      product,
       newImg,
       Id,
       async onSubmit () {
         try {
           const data = {
             id: Id,
-            name: name.value,
-            description: description.value,
-            price: price.value,
-            quantity: quantity.value,
-            img: img.value
+            name: product.name.value,
+            description: product.description.value,
+            price: product.price.value,
+            quantity: product.quantity.value,
+            img: product.img.value
           }
           await api.update(data)
           route.push('/products')

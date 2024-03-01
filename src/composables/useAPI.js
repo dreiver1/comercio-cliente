@@ -34,9 +34,10 @@ export default function useAPI (url) {
       throw new Error(error)
     }
   }
-  const remove = async (id) => {
+
+  const remove = async (id, condition) => {
     try {
-      const response = await api.delete(`${url}/${id}`)
+      const response = await api.delete(`${url}/${id}/${condition}`)
       return response.status
     } catch (error) {
       throw new Error(error)
@@ -54,7 +55,7 @@ export default function useAPI (url) {
     try {
       const formData = new FormData()
       formData.append('file', file)
-      const response = await api.postForm(`${url}/upload`, formData, {
+      const response = await api.postForm(`${url}/image`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
